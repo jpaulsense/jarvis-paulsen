@@ -35,5 +35,30 @@ def get_google_auth_url():
     except Exception as e:
         return jsonify({"error": f"Could not generate auth URL: {e}"}), 500
 
+@app.route('/google/auth/callback')
+def google_auth_callback():
+    """Handles the OAuth 2.0 callback from Google."""
+    # TODO: Verify the 'state' parameter matches the one from the auth URL
+    state = request.args.get('state')
+    
+    try:
+        flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+            CLIENT_SECRETS_FILE, scopes=SCOPES)
+        flow.redirect_uri = request.host_url + 'google/auth/callback'
+
+        # Use the authorization server's response to fetch the OAuth 2.0 tokens.
+        authorization_response = request.url
+        flow.fetch_token(authorization_response=authorization_response)
+
+        credentials = flow.credentials
+        
+        # TODO: Securely store credentials.to_json() for the user in Firestore
+        print("Credentials obtained and ready to be stored:")
+        print(credentials.to_json())
+
+        return "Authentication successful! You can close this tab."
+    except Exception as e:
+        return jsonify({"error": f"Could not fetch token: {e}"}), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5003, debug=True)
