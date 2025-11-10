@@ -66,5 +66,33 @@ def scan_documents():
         "found_files": found_count
     })
 
+@app.route('/search', methods=['GET'])
+def search_documents():
+    """Performs semantic search on the indexed documents."""
+    query = request.args.get('query')
+    if not query:
+        return jsonify({"error": "Missing 'query' query parameter"}), 400
+
+    try:
+        # --- Generate Embedding for Query ---
+        response = requests.post(
+            "http://localhost:11434/api/embeddings",
+            json={"model": "mxbai-embed-large", "prompt": query}
+        )
+        response.raise_for_status()
+        query_embedding = response.json()["embedding"]
+        # ------------------------------------
+
+        # --- Query ChromaDB ---
+        results = collection.query(
+            query_embeddings=[query_embedding],
+            n_results=5 # Return the top 5 results
+        )
+        # --------------------
+
+        return jsonify(results)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002, debug=True)
