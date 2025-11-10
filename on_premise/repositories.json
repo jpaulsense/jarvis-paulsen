@@ -1,10 +1,8 @@
 {
   "image_repositories": [
-    "/path/to/your/photo/library",
-    "/path/to/another/photo/album"
+    "/Volumes/DXP-4800-Disks/DXPDisks - Photography"
   ],
   "document_repositories": [
-    "/path/to/your/documents",
-    "/path/to/your/work/files"
+    "/Volumes/DXP-4800-Disks/DXPDisks - Family"
   ]
 }

@@ -76,8 +76,14 @@ def hash_file(filepath):
 @app.route('/scan', methods=['POST'])
 def scan_library():
     """
-    Scans the image repositories defined in repositories.json.
+    Scans the image repositories defined in repositories.json, with an
+    optional filter for file types.
     """
+    data = request.get_json()
+    file_types = data.get('file_types') if data else None
+    if not file_types:
+        file_types = ['.png', '.jpg', '.jpeg', '.heic', '.cr3', '.xmp']
+
     try:
         with open('../repositories.json', 'r') as f:
             repos = json.load(f)
@@ -96,8 +102,8 @@ def scan_library():
 
         for root, _, files in os.walk(library_path):
             for file in files:
-                if file.lower().endswith(('.png', '.jpg', '.jpeg', '.heic')):
-                file_path = os.path.join(root, file)
+                if file.lower().endswith(tuple(file_types)):
+                    file_path = os.path.join(root, file)
                 
                 # Check if the file is already indexed and unchanged
                 cursor.execute("SELECT file_hash FROM images WHERE file_path = ?", (file_path,))

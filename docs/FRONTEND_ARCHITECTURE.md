@@ -38,6 +38,7 @@ The application will be structured as a tree of reusable components.
     *   **`ImageGrid`:** Displays results from the image search.
     *   **`ChatInterface`:** A new component for interacting with the Assistant Agent.
     *   **`ImageUpload`:** A new component for uploading images (e.g., schedules) to the Assistant Agent for processing.
+    *   **`ScanOptions`:** A new component that allows the user to select which file types to include in a scan (e.g., a checklist with ".jpg", ".cr3", ".xmp").
 *   **`LoginPage`:** A simple page with a "Sign in with Google" button.
 *   **`ProfilePage`:** Allows users to view their profile information.
 *   **`SettingsPage`:** Provides application settings, such as managing the paths to local file directories.

@@ -23,7 +23,7 @@ The Image Analysis MCP will expose a RESTful API for the front-end and other ser
 
 | Method | Endpoint | Description | Request Body | Success Response (200) |
 | :--- | :--- | :--- | :--- | :--- |
-| `POST` | `/scan` | Triggers a full scan and indexing of the photo library. | `{ "path": "/path/to/photos" }` | `{ "status": "scan_started", "job_id": "uuid" }` |
+| `POST` | `/scan` | Triggers a full scan of the repositories in `repositories.json`. | `{ "file_types": [".jpg", ".cr3"] }` (Optional) | `{ "status": "scan_started" }` |
 | `GET` | `/scan/status/{job_id}` | Checks the status of a running scan. | (None) | `{ "status": "in_progress", "progress": 0.75 }` |
 | `GET` | `/search/person` | Searches for images containing a specific person. | `{ "name": "John Doe" }` | `[{ "image_path": "...", "bounding_box": [...] }]` |
 | `GET` | `/search/metadata` | Searches for images based on metadata criteria. | `{ "date": "2023-10-27", "camera": "Canon" }` | `[{ "image_path": "...", "metadata": {...} }]` |
