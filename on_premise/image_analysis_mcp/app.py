@@ -152,6 +152,36 @@ def scan_library():
         "indexed_files": indexed_count
     })
 
+@app.route('/search/person', methods=['GET'])
+def search_by_person():
+    """Searches for images containing a specific person."""
+    name = request.args.get('name')
+    if not name:
+        return jsonify({"error": "Missing 'name' query parameter"}), 400
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT id FROM persons WHERE name = ?", (name,))
+    person = cursor.fetchone()
+
+    if not person:
+        return jsonify({"error": "Person not found"}), 404
+
+    person_id = person['id']
+    
+    cursor.execute('''
+        SELECT i.file_path, f.bounding_box
+        FROM images i
+        JOIN faces f ON i.id = f.image_id
+        WHERE f.person_id = ?
+    ''', (person_id,))
+    
+    results = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+
+    return jsonify(results)
+
 if __name__ == '__main__':
     init_db()
     app.run(host='0.0.0.0', port=5001, debug=True)
