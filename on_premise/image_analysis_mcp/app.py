@@ -4,6 +4,7 @@ import sqlite3
 import json
 import hashlib
 from datetime import datetime
+import face_recognition
 
 app = Flask(__name__)
 
@@ -102,6 +103,19 @@ def scan_library():
                 
                 if result and result['file_hash'] == file_hash:
                     continue # Skip if unchanged
+
+                # --- Facial Recognition ---
+                try:
+                    image = face_recognition.load_image_file(file_path)
+                    face_locations = face_recognition.face_locations(image)
+                    face_encodings = face_recognition.face_encodings(image, face_locations)
+
+                    if face_encodings:
+                        print(f"Found {len(face_encodings)} face(s) in {file_path}")
+                        # TODO: Store face encodings in the database
+                except Exception as e:
+                    print(f"Could not process {file_path} for faces: {e}")
+                # -------------------------
 
                 # TODO: Add EXIF data extraction here
                 
