@@ -48,6 +48,7 @@ def init_db():
             image_id INTEGER,
             person_id INTEGER,
             bounding_box TEXT,
+            encoding TEXT,
             confidence REAL,
             FOREIGN KEY (image_id) REFERENCES images (id),
             FOREIGN KEY (person_id) REFERENCES persons (id)
@@ -112,7 +113,25 @@ def scan_library():
 
                     if face_encodings:
                         print(f"Found {len(face_encodings)} face(s) in {file_path}")
-                        # TODO: Store face encodings in the database
+                        
+                        # Get the image ID
+                        cursor.execute("SELECT id FROM images WHERE file_path = ?", (file_path,))
+                        image_row = cursor.fetchone()
+                        if not image_row:
+                            continue
+                        image_id = image_row['id']
+
+                        for i, face_encoding in enumerate(face_encodings):
+                            # TODO: Implement logic to find or create a person record
+                            person_id = None # Placeholder
+
+                            bounding_box = json.dumps(face_locations[i])
+                            encoding = json.dumps(face_encoding.tolist())
+
+                            cursor.execute(
+                                "INSERT INTO faces (image_id, person_id, bounding_box, encoding) VALUES (?, ?, ?, ?)",
+                                (image_id, person_id, bounding_box, encoding)
+                            )
                 except Exception as e:
                     print(f"Could not process {file_path} for faces: {e}")
                 # -------------------------
