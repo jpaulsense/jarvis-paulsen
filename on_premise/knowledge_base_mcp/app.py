@@ -1,7 +1,13 @@
 from flask import Flask, request, jsonify
 import os
+import requests
+import chromadb
 
 app = Flask(__name__)
+
+# --- ChromaDB Setup ---
+client = chromadb.Client()
+collection = client.get_or_create_collection("knowledge_base")
 
 @app.route('/')
 def index():
@@ -29,8 +35,31 @@ def scan_documents():
             if file.lower().endswith(('.pdf', '.docx', '.txt', '.md')):
                 file_path = os.path.join(root, file)
                 print(f"Found document: {file_path}")
-                # TODO: Add logic to generate embeddings and store them
-                found_count += 1
+                
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    
+                    # --- Generate Embedding with Ollama ---
+                    response = requests.post(
+                        "http://localhost:11434/api/embeddings",
+                        json={"model": "mxbai-embed-large", "prompt": content}
+                    )
+                    response.raise_for_status()
+                    embedding = response.json()["embedding"]
+                    # ------------------------------------
+
+                    # --- Store in ChromaDB ---
+                    collection.add(
+                        embeddings=[embedding],
+                        documents=[content],
+                        metadatas=[{"source": file_path}],
+                        ids=[file_path] # Use file path as a unique ID
+                    )
+                    # -------------------------
+                    found_count += 1
+                except Exception as e:
+                    print(f"Could not process {file_path}: {e}")
 
     return jsonify({
         "status": "scan_complete",
