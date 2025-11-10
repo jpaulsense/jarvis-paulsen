@@ -1,8 +1,8 @@
 {
   "image_repositories": [
-    "/Volumes/DXP-4800-Disks/DXPDisks - Photography"
+    "//10.84.82.9/DXP-4800-Disks/DXPDisks - Photography"
   ],
   "document_repositories": [
-    "/Volumes/DXP-4800-Disks/DXPDisks - Family"
+    "//10.84.82.9/DXP-4800-Disks/DXPDisks - Family"
   ]
 }
