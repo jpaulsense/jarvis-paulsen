@@ -83,5 +83,26 @@ def read_gmail():
     except Exception as e:
         return jsonify({"error": f"Could not read Gmail: {e}"}), 500
 
+@app.route('/calendar/create', methods=['POST'])
+def create_calendar_event():
+    """Creates a new event in the user's Google Calendar."""
+    event_data = request.get_json()
+    if not event_data:
+        return jsonify({"error": "Missing event data in request body"}), 400
+
+    # TODO: Load credentials securely from Firestore
+    creds_json = None # Replace with secure loading
+    if not creds_json:
+        return jsonify({"error": "User is not authenticated with Google"}), 401
+
+    try:
+        credentials = Credentials.from_authorized_user_info(creds_json, SCOPES)
+        service = build('calendar', 'v3', credentials=credentials)
+
+        event = service.events().insert(calendarId='primary', body=event_data).execute()
+        return jsonify({'status': 'event_created', 'event_link': event.get('htmlLink')})
+    except Exception as e:
+        return jsonify({"error": f"Could not create calendar event: {e}"}), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5003, debug=True)
