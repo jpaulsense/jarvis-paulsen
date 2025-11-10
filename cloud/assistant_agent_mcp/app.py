@@ -104,5 +104,50 @@ def create_calendar_event():
     except Exception as e:
         return jsonify({"error": f"Could not create calendar event: {e}"}), 500
 
+@app.route('/upload/image_schedule', methods=['POST'])
+def upload_image_schedule():
+    """
+    Performs OCR on an uploaded image, uses Gemini to find events,
+    and creates them in Google Calendar.
+    """
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part in the request"}), 400
+    
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+
+    try:
+        # --- OCR with Google Cloud Vision ---
+        from google.cloud import vision
+        client = vision.ImageAnnotatorClient()
+        content = file.read()
+        image = vision.Image(content=content)
+        response = client.text_detection(image=image)
+        text = response.text_annotations[0].description
+        # ------------------------------------
+
+        # --- Event Extraction with Gemini ---
+        import google.generativeai as genai
+        # TODO: Configure with your API key
+        # genai.configure(api_key="YOUR_GEMINI_API_KEY")
+        model = genai.GenerativeModel('gemini-pro')
+        prompt = f"""
+        Analyze the following text extracted from a schedule. Identify any events
+        and return them as a JSON array with objects containing "summary", "start_date",
+        and "start_time".
+
+        Text:
+        {text}
+        """
+        response = model.generate_content(prompt)
+        # ------------------------------------
+
+        # For now, just return the extracted events
+        return jsonify(response.text)
+
+    except Exception as e:
+        return jsonify({"error": f"Could not process image schedule: {e}"}), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5003, debug=True)
