@@ -182,6 +182,23 @@ def search_by_person():
 
     return jsonify(results)
 
+@app.route('/search/metadata', methods=['GET'])
+def search_by_metadata():
+    """Searches for images based on metadata (currently filepath)."""
+    query = request.args.get('query')
+    if not query:
+        return jsonify({"error": "Missing 'query' query parameter"}), 400
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT file_path, exif_data FROM images WHERE file_path LIKE ?", (f"%{query}%",))
+    
+    results = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+
+    return jsonify(results)
+
 if __name__ == '__main__':
     init_db()
     app.run(host='0.0.0.0', port=5001, debug=True)
