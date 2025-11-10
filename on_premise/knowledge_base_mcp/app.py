@@ -18,21 +18,24 @@ def index():
 @app.route('/scan', methods=['POST'])
 def scan_documents():
     """
-    Scans a directory for documents and prepares them for indexing.
-    Expects a JSON body with a "path" key.
+    Scans the document repositories defined in repositories.json.
     """
-    data = request.get_json()
-    if not data or 'path' not in data:
-        return jsonify({"error": "Missing 'path' in request body"}), 400
-
-    doc_path = data['path']
-    if not os.path.isdir(doc_path):
-        return jsonify({"error": f"Directory not found: {doc_path}"}), 400
+    try:
+        with open('../repositories.json', 'r') as f:
+            repos = json.load(f)
+        doc_paths = repos.get("document_repositories", [])
+    except FileNotFoundError:
+        return jsonify({"error": "repositories.json not found"}), 500
 
     found_count = 0
-    for root, _, files in os.walk(doc_path):
-        for file in files:
-            if file.lower().endswith(('.pdf', '.docx', '.txt', '.md')):
+    for doc_path in doc_paths:
+        if not os.path.isdir(doc_path):
+            print(f"Warning: Directory not found, skipping: {doc_path}")
+            continue
+
+        for root, _, files in os.walk(doc_path):
+            for file in files:
+                if file.lower().endswith(('.pdf', '.docx', '.txt', '.md')):
                 file_path = os.path.join(root, file)
                 print(f"Found document: {file_path}")
                 

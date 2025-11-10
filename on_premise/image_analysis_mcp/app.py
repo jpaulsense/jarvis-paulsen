@@ -76,24 +76,27 @@ def hash_file(filepath):
 @app.route('/scan', methods=['POST'])
 def scan_library():
     """
-    Scans a directory for images, extracts metadata, and indexes them.
-    Expects a JSON body with a "path" key.
+    Scans the image repositories defined in repositories.json.
     """
-    data = request.get_json()
-    if not data or 'path' not in data:
-        return jsonify({"error": "Missing 'path' in request body"}), 400
-
-    library_path = data['path']
-    if not os.path.isdir(library_path):
-        return jsonify({"error": f"Directory not found: {library_path}"}), 400
+    try:
+        with open('../repositories.json', 'r') as f:
+            repos = json.load(f)
+        image_paths = repos.get("image_repositories", [])
+    except FileNotFoundError:
+        return jsonify({"error": "repositories.json not found"}), 500
 
     conn = get_db_connection()
     cursor = conn.cursor()
     
     indexed_count = 0
-    for root, _, files in os.walk(library_path):
-        for file in files:
-            if file.lower().endswith(('.png', '.jpg', '.jpeg', '.heic')):
+    for library_path in image_paths:
+        if not os.path.isdir(library_path):
+            print(f"Warning: Directory not found, skipping: {library_path}")
+            continue
+
+        for root, _, files in os.walk(library_path):
+            for file in files:
+                if file.lower().endswith(('.png', '.jpg', '.jpeg', '.heic')):
                 file_path = os.path.join(root, file)
                 
                 # Check if the file is already indexed and unchanged

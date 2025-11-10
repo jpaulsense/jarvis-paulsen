@@ -1,0 +1,10 @@
+{
+  "image_repositories": [
+    "/path/to/your/photo/library",
+    "/path/to/another/photo/album"
+  ],
+  "document_repositories": [
+    "/path/to/your/documents",
+    "/path/to/your/work/files"
+  ]
+}
