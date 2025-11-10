@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, redirect
 import os
 import google_auth_oauthlib.flow
+from googleapiclient.discovery import build
+from google.oauth2.credentials import Credentials
 
 app = Flask(__name__)
 
@@ -59,6 +61,27 @@ def google_auth_callback():
         return "Authentication successful! You can close this tab."
     except Exception as e:
         return jsonify({"error": f"Could not fetch token: {e}"}), 500
+
+@app.route('/gmail/read')
+def read_gmail():
+    """Reads the user's recent emails from Gmail."""
+    # TODO: Load credentials securely from Firestore
+    # For now, we'll use a placeholder for where the credentials would be loaded from.
+    creds_json = None # Replace with secure loading
+    if not creds_json:
+        return jsonify({"error": "User is not authenticated with Google"}), 401
+
+    try:
+        credentials = Credentials.from_authorized_user_info(creds_json, SCOPES)
+        service = build('gmail', 'v1', credentials=credentials)
+
+        # Call the Gmail API
+        results = service.users().messages().list(userId='me', labelIds=['INBOX'], maxResults=10).execute()
+        messages = results.get('messages', [])
+
+        return jsonify(messages)
+    except Exception as e:
+        return jsonify({"error": f"Could not read Gmail: {e}"}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5003, debug=True)
