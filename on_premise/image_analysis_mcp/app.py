@@ -61,7 +61,63 @@ def init_db():
 def index():
     return "Image Analysis MCP is running."
 
-# --- API Endpoints will be added below ---
+# --- API Endpoints ---
+
+def hash_file(filepath):
+    """Calculates the SHA256 hash of a file."""
+    hasher = hashlib.sha256()
+    with open(filepath, 'rb') as f:
+        buf = f.read()
+        hasher.update(buf)
+    return hasher.hexdigest()
+
+@app.route('/scan', methods=['POST'])
+def scan_library():
+    """
+    Scans a directory for images, extracts metadata, and indexes them.
+    Expects a JSON body with a "path" key.
+    """
+    data = request.get_json()
+    if not data or 'path' not in data:
+        return jsonify({"error": "Missing 'path' in request body"}), 400
+
+    library_path = data['path']
+    if not os.path.isdir(library_path):
+        return jsonify({"error": f"Directory not found: {library_path}"}), 400
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    indexed_count = 0
+    for root, _, files in os.walk(library_path):
+        for file in files:
+            if file.lower().endswith(('.png', '.jpg', '.jpeg', '.heic')):
+                file_path = os.path.join(root, file)
+                
+                # Check if the file is already indexed and unchanged
+                cursor.execute("SELECT file_hash FROM images WHERE file_path = ?", (file_path,))
+                result = cursor.fetchone()
+                
+                file_hash = hash_file(file_path)
+                
+                if result and result['file_hash'] == file_hash:
+                    continue # Skip if unchanged
+
+                # TODO: Add EXIF data extraction here
+                
+                cursor.execute(
+                    "INSERT OR REPLACE INTO images (file_path, file_hash, last_modified, exif_data) VALUES (?, ?, ?, ?)",
+                    (file_path, file_hash, datetime.now(), json.dumps({}))
+                )
+                indexed_count += 1
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({
+        "status": "scan_complete",
+        "indexed_files": indexed_count
+    })
 
 if __name__ == '__main__':
     init_db()
