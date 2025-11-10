@@ -27,19 +27,20 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Jarvis Paulsen Assistant</h1>
-        {user ? (
-          <div>
-            <p>Welcome, {user.displayName}!</p>
-            <button onClick={handleSignOut}>Sign Out</button>
-          </div>
-        ) : (
-          <button onClick={handleSignIn}>Sign in with Google</button>
-        )}
-      </header>
-    </div>
+    <Layout
+      user={user}
+      handleSignIn={handleSignIn}
+      handleSignOut={handleSignOut}
+    >
+      {user ? (
+        <div>
+          {/* The main content of the application will go here */}
+          <h2>Welcome to your personal assistant.</h2>
+        </div>
+      ) : (
+        <h2>Please sign in to continue.</h2>
+      )}
+    </Layout>
   );
 }
 
