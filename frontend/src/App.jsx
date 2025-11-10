@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import { auth } from './firebase';
 import { checkOnPremStatus } from './api';
+import Layout from './components/Layout';
+import Chat from './components/Chat';
 import './App.css';
 
 function App() {
@@ -33,10 +35,7 @@ function App() {
       handleSignOut={handleSignOut}
     >
       {user ? (
-        <div>
-          {/* The main content of the application will go here */}
-          <h2>Welcome to your personal assistant.</h2>
-        </div>
+        <Chat />
       ) : (
         <h2>Please sign in to continue.</h2>
       )}

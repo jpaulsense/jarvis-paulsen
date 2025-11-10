@@ -40,3 +40,53 @@
 .read-the-docs {
   color: #888;
 }
+
+/* --- Chat Component Styles --- */
+.chat-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 2rem auto;
+  border: 1px solid #444;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  height: 70vh;
+}
+
+.message-list {
+  flex-grow: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.message {
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  margin-bottom: 0.5rem;
+  max-width: 80%;
+}
+
+.message.user {
+  background-color: #007bff;
+  color: white;
+  align-self: flex-end;
+}
+
+.message.assistant {
+  background-color: #333;
+  align-self: flex-start;
+}
+
+.message-input {
+  display: flex;
+  padding: 1rem;
+  border-top: 1px solid #444;
+}
+
+.message-input input {
+  flex-grow: 1;
+  margin-right: 1rem;
+}
+/* ------------------------- */
