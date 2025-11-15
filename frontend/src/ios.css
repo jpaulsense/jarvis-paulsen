@@ -1,0 +1,238 @@
+/**
+ * iOS and Mobile Optimizations
+ * Import this in your main CSS file or App.jsx
+ */
+
+/* iOS-specific styles using feature detection */
+@supports (-webkit-touch-callout: none) {
+  /* iOS-specific styles */
+  body {
+    /* Handle safe areas on iPhone X and newer */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  #root {
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  }
+
+  /* Prevent iOS zoom on input focus */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /* Better button touch targets for iOS */
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Disable iOS text size adjustment */
+  body {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Smooth scrolling for iOS */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* PWA standalone mode (when installed to home screen) */
+@media (display-mode: standalone) {
+  body {
+    padding-top: max(20px, env(safe-area-inset-top));
+  }
+
+  /* Hide any "install app" prompts when already installed */
+  .install-prompt {
+    display: none !important;
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  /* Better touch targets */
+  button,
+  a,
+  input[type='file'],
+  input[type='checkbox'],
+  input[type='radio'] {
+    min-height: 44px;
+  }
+
+  /* Better mobile image upload area */
+  .upload-area {
+    min-height: 200px;
+    padding: 20px;
+  }
+
+  /* Prevent text selection on mobile (for UI elements) */
+  button,
+  .no-select {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Better mobile spacing */
+  .card,
+  .section {
+    margin-bottom: 16px;
+  }
+}
+
+/* iPhone X and newer (with notch) */
+@media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3),
+  screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2),
+  screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3),
+  screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3),
+  screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) {
+  /* iPhone with notch specific styles */
+  body {
+    padding-top: max(env(safe-area-inset-top), 44px);
+  }
+}
+
+/* iPad specific */
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* iPad optimizations */
+  .container {
+    max-width: 768px;
+    margin: 0 auto;
+  }
+
+  /* Better touch targets for iPad */
+  button {
+    min-height: 48px;
+  }
+}
+
+/* Dark mode support (respects iOS/system dark mode) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+    --border-color: #404040;
+  }
+
+  /* Let components opt into dark mode */
+  .dark-mode-enabled {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+  }
+
+  .dark-mode-enabled .card {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+  }
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  button,
+  input,
+  select {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Utility classes for iOS */
+.ios-only {
+  display: none;
+}
+
+@supports (-webkit-touch-callout: none) {
+  .ios-only {
+    display: block;
+  }
+
+  .non-ios {
+    display: none;
+  }
+}
+
+/* Safe area helpers */
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-left {
+  padding-left: env(safe-area-inset-left);
+}
+
+.safe-area-right {
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Image upload enhancements for mobile */
+input[type='file'] {
+  /* Accept HEIC files from iOS */
+  accept: image/*,.heic,.heif;
+}
+
+/* Haptic feedback class (visual feedback when haptics trigger) */
+.haptic-feedback {
+  transition: transform 0.1s ease;
+}
+
+.haptic-feedback:active {
+  transform: scale(0.97);
+}
+
+/* Loading states optimized for mobile */
+.loading-spinner-mobile {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Sticky header for mobile (respects safe area) */
+.sticky-header {
+  position: sticky;
+  top: env(safe-area-inset-top);
+  z-index: 100;
+}
+
+/* Bottom navigation/action bar (respects safe area) */
+.bottom-action-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: white;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
