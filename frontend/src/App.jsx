@@ -4,10 +4,15 @@ import { auth } from './firebase';
 import { checkOnPremStatus } from './api';
 import Layout from './components/Layout';
 import Chat from './components/Chat';
+import CalendarUpload from './components/CalendarUpload';
+import EventsList from './components/EventsList';
+import InstallPrompt from './components/InstallPrompt';
 import './App.css';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [activeTab, setActiveTab] = useState('calendar'); // 'calendar' or 'chat'
+  const [extractedData, setExtractedData] = useState(null);
 
   useEffect(() => {
     checkOnPremStatus();
@@ -28,6 +33,19 @@ function App() {
       .catch((error) => console.error("Sign out error:", error));
   };
 
+  const handleEventsExtracted = (data) => {
+    setExtractedData(data);
+  };
+
+  const handleUploadAnother = () => {
+    setExtractedData(null);
+  };
+
+  const handleComplete = (result) => {
+    console.log('Calendar operation complete:', result);
+    // Could add analytics or notifications here
+  };
+
   return (
     <Layout
       user={user}
@@ -35,9 +53,51 @@ function App() {
       handleSignOut={handleSignOut}
     >
       {user ? (
-        <Chat />
+        <>
+          {/* Tab Navigation */}
+          <div className="tab-navigation">
+            <button
+              className={`tab ${activeTab === 'calendar' ? 'active' : ''}`}
+              onClick={() => setActiveTab('calendar')}
+            >
+              📅 Calendar Assistant
+            </button>
+            <button
+              className={`tab ${activeTab === 'chat' ? 'active' : ''}`}
+              onClick={() => setActiveTab('chat')}
+            >
+              💬 Chat
+            </button>
+          </div>
+
+          {/* Tab Content */}
+          <div className="tab-content">
+            {activeTab === 'calendar' ? (
+              <div className="calendar-assistant-container">
+                {!extractedData ? (
+                  <CalendarUpload onEventsExtracted={handleEventsExtracted} />
+                ) : (
+                  <EventsList
+                    events={extractedData.events}
+                    ocrText={extractedData.ocrText}
+                    onComplete={handleComplete}
+                    onUploadAnother={handleUploadAnother}
+                  />
+                )}
+              </div>
+            ) : (
+              <Chat />
+            )}
+          </div>
+
+          {/* iOS Install Prompt */}
+          <InstallPrompt />
+        </>
       ) : (
-        <h2>Please sign in to continue.</h2>
+        <div className="sign-in-prompt">
+          <h2>Welcome to Family Assistant</h2>
+          <p>Sign in with your Google account to continue</p>
+        </div>
       )}
     </Layout>
   );

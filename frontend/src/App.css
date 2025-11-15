@@ -2,7 +2,64 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
+  padding-bottom: calc(2rem + env(safe-area-inset-bottom));
   text-align: center;
+}
+
+/* Tab Navigation */
+.tab-navigation {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 0;
+}
+
+.tab {
+  flex: 1;
+  max-width: 200px;
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #666;
+}
+
+.tab:hover {
+  color: #333;
+  background: #f8f9ff;
+}
+
+.tab.active {
+  color: #667eea;
+  border-bottom-color: #667eea;
+  font-weight: 600;
+}
+
+.tab-content {
+  min-height: 400px;
+}
+
+.calendar-assistant-container {
+  text-align: left;
+}
+
+.sign-in-prompt {
+  padding: 60px 20px;
+}
+
+.sign-in-prompt h2 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.sign-in-prompt p {
+  color: #666;
+  font-size: 1.1rem;
 }
 
 .logo {

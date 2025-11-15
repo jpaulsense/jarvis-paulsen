@@ -1,0 +1,142 @@
+.install-prompt {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #ddd;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  animation: slideUp 0.3s ease;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.install-content {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.install-icon {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.install-text h3 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.install-text p {
+  margin: 0 0 15px 0;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.install-instructions {
+  background: #f8f9ff;
+  border-left: 3px solid #667eea;
+  padding: 15px;
+  border-radius: 4px;
+  margin: 15px 0;
+}
+
+.install-instructions ol {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.install-instructions li {
+  margin: 8px 0;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.install-instructions strong {
+  color: #333;
+}
+
+.share-icon {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 2px;
+  color: #667eea;
+}
+
+.install-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.install-btn {
+  flex: 1;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.install-btn:active {
+  transform: scale(0.98);
+}
+
+.dismiss-btn {
+  padding: 12px 20px;
+  background: transparent;
+  color: #666;
+  border: none;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.dismiss-btn:hover {
+  color: #333;
+}
+
+/* Hide on non-iOS */
+@media not all and (-webkit-touch-callout: none) {
+  .install-prompt {
+    display: none;
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 600px) {
+  .install-content {
+    padding: 15px;
+  }
+
+  .install-icon {
+    font-size: 2rem;
+  }
+
+  .install-text h3 {
+    font-size: 1.1rem;
+  }
+
+  .install-actions {
+    flex-direction: column;
+  }
+
+  .install-btn,
+  .dismiss-btn {
+    width: 100%;
+  }
+}
