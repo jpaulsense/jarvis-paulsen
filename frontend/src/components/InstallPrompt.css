@@ -4,8 +4,8 @@
   left: 0;
   right: 0;
   background: white;
-  border-top: 1px solid #ddd;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+  border-top: 3px solid var(--wild-teal);
+  box-shadow: 0 -4px 24px rgba(30, 127, 118, 0.15);
   z-index: 1000;
   animation: slideUp 0.3s ease;
   padding-bottom: env(safe-area-inset-bottom);
@@ -30,25 +30,26 @@
   font-size: 2.5rem;
   text-align: center;
   margin-bottom: 15px;
+  color: var(--wild-teal);
 }
 
 .install-text h3 {
   margin: 0 0 8px 0;
-  color: #333;
+  color: var(--wild-gray);
   font-size: 1.2rem;
 }
 
 .install-text p {
   margin: 0 0 15px 0;
-  color: #666;
+  color: var(--wild-gray-light);
   font-size: 0.95rem;
 }
 
 .install-instructions {
-  background: #f8f9ff;
-  border-left: 3px solid #667eea;
-  padding: 15px;
-  border-radius: 4px;
+  background: rgba(30, 127, 118, 0.05);
+  border-left: 4px solid var(--wild-teal);
+  padding: 16px;
+  border-radius: 8px;
   margin: 15px 0;
 }
 
@@ -59,19 +60,19 @@
 
 .install-instructions li {
   margin: 8px 0;
-  color: #555;
+  color: var(--wild-gray-light);
   font-size: 0.9rem;
 }
 
 .install-instructions strong {
-  color: #333;
+  color: var(--wild-gray);
 }
 
 .share-icon {
   display: inline-block;
   vertical-align: middle;
   margin: 0 2px;
-  color: #667eea;
+  color: var(--wild-teal);
 }
 
 .install-actions {
@@ -82,11 +83,11 @@
 
 .install-btn {
   flex: 1;
-  padding: 12px 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 14px 24px;
+  background: var(--wild-teal);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -95,19 +96,21 @@
 
 .install-btn:active {
   transform: scale(0.98);
+  background: var(--wild-teal-dark);
 }
 
 .dismiss-btn {
-  padding: 12px 20px;
+  padding: 14px 24px;
   background: transparent;
-  color: #666;
+  color: var(--wild-gray-light);
   border: none;
   font-size: 0.95rem;
   cursor: pointer;
+  transition: color 0.2s;
 }
 
 .dismiss-btn:hover {
-  color: #333;
+  color: var(--wild-gray);
 }
 
 /* Hide on non-iOS */
